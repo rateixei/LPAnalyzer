@@ -8,7 +8,7 @@ def PrintTH1F(hist, legend):
 	leg.SetBorderSize(0)
 	leg.AddEntry(hist, legend, "l")
 
-	c = TCanvas("a", "a", 800, 800)
+	c = TCanvas("a", "a", 900, 600)
 	c.SetFillColor(0)
 	c.SetBorderMode(0)
 	c.SetFrameFillStyle(0)

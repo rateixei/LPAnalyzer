@@ -12,8 +12,9 @@ int TreeProber(){
 //	std::string infile("ggfHZG_20bx25_CSA14_numEvent4000.root");
 //		std::string infile("ggfHZG_20bx25_CSA14.root");
 //	std::string infile("/afs/cern.ch/work/r/rateixei/work/LatinosHZGamma/commit/CMSSW_7_2_0/src/LatinoTrees/AnalysisStep/test/ggfHgg_20bx25_phys14.root");
-	std::string infile("/afs/cern.ch/work/r/rateixei/work/LatinosHZGamma/commit/CMSSW_7_2_0/src/LatinoTrees/AnalysisStep/test/ggfHgg_20bx25_phys14_all_2photons.root");
+//	std::string infile("/afs/cern.ch/work/r/rateixei/work/LatinosHZGamma/commit/CMSSW_7_2_0/src/LatinoTrees/AnalysisStep/test/ggfHgg_20bx25_phys14_all_2photons.root");
 //	std::string infile("/afs/cern.ch/work/r/rateixei/work/LatinosHZGamma/commit/CMSSW_7_2_0/src/LatinoTrees/AnalysisStep/test/ggfHzg_20bx25_csa14_all.root");
+	std::string infile("/afs/cern.ch/work/r/rateixei/work/LatinosHZGamma/commit/CMSSW_7_2_0/src/LatinoTrees/AnalysisStep/test/ggfHzg_private_20bx25_phys14_all_2photons_2.root");
 	std::string Root(".root");
 	TString IF(infile);
 	std::size_t found = infile.find(Root);
@@ -24,7 +25,7 @@ int TreeProber(){
 //		TFile* file = new TFile("ggfHZG_20bx25_private.root", "READ");
 		TFile* file = new TFile(IF, "READ");
 		TTree* t = (TTree*) file->Get("Tree/probe_tree");
-		t->Process("src/probe_tree.C", "hgg_phys14_probe_2phos.root");
+		t->Process("src/probe_tree.C", "hzg_private_phys14_probe_2phos_2.root");
 		cout << "Processing tree with " << t->GetEntriesFast() << " entries..." << endl;
 	}
 }

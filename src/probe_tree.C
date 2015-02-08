@@ -122,11 +122,11 @@ void probe_tree::Begin(TTree * /*tree*/)
     _hists = new TClonesArray("TH1F");
     _2Dhists = new TClonesArray("TH2F");
 
-   new((*_hists)[0]) TH1F("meeg", "DiElectron+Photon Invariant Mass; M_{ee#gamma} (GeV)", 100, 80, 160);
-   new((*_hists)[1]) TH1F("muug", "DiMuon+Photon Invariant Mass; M_{#mu#mu#gamma} (GeV)", 100, 80, 160);
+   new((*_hists)[0]) TH1F("meeg", "DiElectron+Photon Invariant Mass; M_{ee#gamma} (GeV)", 100, 0, 160);
+   new((*_hists)[1]) TH1F("muug", "DiMuon+Photon Invariant Mass; M_{#mu#mu#gamma} (GeV)", 100, 0, 160);
 
-   new((*_hists)[2]) TH1F("mee", "DiElectron Invariant Mass; M_{ee} (GeV)", 100, 60, 130);
-   new((*_hists)[3]) TH1F("muu", "DiMuon Invariant Mass; M_{#mu#mu} (GeV)", 100, 60, 130);
+   new((*_hists)[2]) TH1F("mee", "DiElectron Invariant Mass; M_{ee} (GeV)", 100, 0, 130);
+   new((*_hists)[3]) TH1F("muu", "DiMuon Invariant Mass; M_{#mu#mu} (GeV)", 100, 0, 130);
 
    new((*_hists)[4]) TH1F("g1_pt", "1st Photon P_{T}; P^{#gamma}_{T} (GeV)", 100, 0, 150);
    new((*_hists)[5]) TH1F("g1_phi", "1st Photon #phi; #phi^{#gamma}", 100, -4, 4);
@@ -164,19 +164,24 @@ void probe_tree::Begin(TTree * /*tree*/)
 
    new((*_hists)[29]) TH1F("g1_hoe", "1st Photon H/E; H/E_{#gamma1} (GeV)", 100, 0, 0.1);
    new((*_hists)[30]) TH1F("g1_sieie", "1st Photon #sigma_{i#eta i#eta}; #sigma_{i#eta i#eta}", 100, 0., 0.035);
-   new((*_hists)[31]) TH1F("g1_conv", "1st Photon - Presence of Pixel Seed; Has Pixel seed?", 10., 0., 5);
+   new((*_hists)[31]) TH1F("g1_pix", "1st Photon - Presence of Pixel Seed; Has Pixel seed?", 10., 0., 3);
    new((*_hists)[32]) TH1F("g1_chiso", "1st Photon CH-Iso; CH-Iso", 100., 0., 4.);
    new((*_hists)[33]) TH1F("g1_nhiso", "1st Photon NH-Iso; NH-Iso", 100., 0., 4.);
    new((*_hists)[34]) TH1F("g1_phiso", "1st Photon PH-Iso; PH-Iso", 100., 0., 4.);  
 
    new((*_hists)[35]) TH1F("jet1_pt", "1st Jet Pt; P^{Jet1}_{T} (GeV)", 100., 0., 150.);   
-   new((*_hists)[36]) TH1F("m_gg", "Diphoton Invariant Mass; M_{#gamma#gamma} (GeV)", 100., 90., 155.);   
+   new((*_hists)[36]) TH1F("m_gg", "Diphoton Invariant Mass; M_{#gamma#gamma} (GeV)", 100., -90., 155.);   
    new((*_hists)[37]) TH1F("m_gidgid", "Diphoton Invariant Mass - Both ID; M_{#gamma#gamma} (GeV)", 100., 90., 155.);   
    new((*_hists)[38]) TH1F("m_gidisogidiso", "Diphoton Invariant Mass - Both ID+ISO; M_{#gamma#gamma} (GeV)", 100., 90., 155.);   
 
+   new((*_hists)[39]) TH1F("g1_conv", "1st Photon - Conversion Safe Veto; CSV", 10., 0., 3);
      
-   new((*_2Dhists)[0]) TH2F("dre1g_e2g", "DR(e1,g) vs DR(e2,g); DR(e1,g); DR(e2,g)", 100, 0., 2., 100, 0., 2.);
-   new((*_2Dhists)[1]) TH2F("drm1g_m2g", "DR(m1,g) vs DR(m2,g); DR(m1,g); DR(m2,g)", 100, 0., 2., 100, 0., 2.);
+   new((*_hists)[41]) TH1F("g2_pt", "2nd Photon P_{T}; P^{#gamma}_{T} (GeV)", 100, 0, 150);
+   new((*_hists)[42]) TH1F("g2_phi", "2nd Photon #phi; #phi^{#gamma}", 100, -4, 4);
+   new((*_hists)[43]) TH1F("g2_eta", "2nd Photon #eta; #eta^{#gamma}", 100, -4, 4);
+
+   new((*_2Dhists)[0]) TH2F("dre1g_e2g", "DR(e1,g) vs DR(e2,g); DR(e1,g); DR(e2,g)", 100, 0., 2., 100, 0., 10.);
+   new((*_2Dhists)[1]) TH2F("drm1g_m2g", "DR(m1,g) vs DR(m2,g); DR(m1,g); DR(m2,g)", 100, 0., 2., 100, 0., 10.);
       
 }
 
@@ -224,13 +229,19 @@ Bool_t probe_tree::Process(Long64_t entry)
 		 //    	   	 cout << v_jet1->Pt() << endl << endl;
 	  
 		
-	((TH1F*)(_hists->At(4)))->Fill(v_photon1->Pt());
 	if( v_photon1->Pt() > 10 ){
+		((TH1F*)(_hists->At(4)))->Fill(v_photon1->Pt());
 		((TH1F*)(_hists->At(5)))->Fill(v_photon1->Phi());
 		((TH1F*)(_hists->At(6)))->Fill(v_photon1->Eta());	
 	}
 
-	if(fabs(pdgid1) == 11){
+	if( v_photon2->Pt() > 10 ){
+		((TH1F*)(_hists->At(41)))->Fill(v_photon2->Pt());
+		((TH1F*)(_hists->At(42)))->Fill(v_photon2->Phi());
+		((TH1F*)(_hists->At(43)))->Fill(v_photon2->Eta());	
+	}
+
+	if(fabs(pdgid1) == 11 && v_lepton1->Pt() > 10){
 		((TH1F*)(_hists->At(0)))->Fill(mllg);
 		((TH1F*)(_hists->At(2)))->Fill(mll);
 		((TH1F*)(_hists->At(7)))->Fill(v_lepton1->Pt());
@@ -239,7 +250,7 @@ Bool_t probe_tree::Process(Long64_t entry)
 			((TH1F*)(_hists->At(9)))->Fill(v_lepton1->Eta());
 		}
 	}
-	if(fabs(pdgid1) == 13){
+	if(fabs(pdgid1) == 13 && v_lepton1->Pt() > 10){
 		((TH1F*)(_hists->At(1)))->Fill(mllg);
 		((TH1F*)(_hists->At(3)))->Fill(mll);
 		((TH1F*)(_hists->At(10)))->Fill(v_lepton1->Pt());
@@ -314,18 +325,27 @@ Bool_t probe_tree::Process(Long64_t entry)
 	((TH1F*)(_hists->At(32)))->Fill(pho_charged);
 	((TH1F*)(_hists->At(33)))->Fill(pho_neutral);
 	((TH1F*)(_hists->At(34)))->Fill(pho_photon);
+	((TH1F*)(_hists->At(39)))->Fill(pho_passElecVeto);
 	
+	
+	TLorentzVector l1(v_lepton1->Px(), v_lepton1->Py(), v_lepton1->Pz(), v_lepton1->E());
+	TLorentzVector l2(v_lepton2->Px(), v_lepton2->Py(), v_lepton2->Pz(), v_lepton2->E());
+	TLorentzVector g1;// = 0;
+	g1.SetPtEtaPhiE(v_photon1->Pt(), v_photon1->Eta(), v_photon1->Phi(), v_photon1->E());
+	TLorentzVector g2;// = 0;
+	g1.SetPtEtaPhiE(v_photon2->Pt(), v_photon2->Eta(), v_photon2->Phi(), v_photon2->E());
+//	TLorentzVector g2(v_photon2->Px(), v_photon2->Py(), v_photon2->Pz(), v_photon2->E());
 	if(v_photon1->Pt() > 10 && v_lepton1->Pt() > 10 && v_lepton2->Pt() > 10){
-		TLorentzVector l1(v_lepton1->Px(), v_lepton1->Py(), v_lepton1->Pz(), v_lepton1->E());
-		TLorentzVector l2(v_lepton2->Px(), v_lepton2->Py(), v_lepton2->Pz(), v_lepton2->E());
-		TLorentzVector g1(v_photon1->Px(), v_photon1->Py(), v_photon1->Pz(), v_photon1->E());
-		TLorentzVector g2(v_photon2->Px(), v_photon2->Py(), v_photon2->Pz(), v_photon2->E());
 		double dr1 = l1.DeltaR(g1);
 		double dr2 = l2.DeltaR(g1);
 		if(fabs(pdgid1) == 11 && fabs(pdgid2) == 11) ((TH2F*)(_2Dhists->At(0)))->Fill(dr1, dr2);
 		if(fabs(pdgid1) == 13 && fabs(pdgid2) == 13) ((TH2F*)(_2Dhists->At(1)))->Fill(dr1, dr2);
-
-		TLorentzVector Hgg = g1+g2;
+	}
+	if(v_photon1->Pt() > 10 && v_photon2->Pt() > 10)
+	{
+		TLorentzVector Hgg = g1 + g2;
+		//(v_photon1->Px()+v_photon2->Px(), v_photon1->Py()+v_photon2->Py(),v_photon1->Pz()+v_photon2->Pz(), v_photon1->E()+v_photon2->E());
+//		if(entry%100 == 0)      cout << "Hgg mass " << Hgg.M() << endl;
 		((TH1F*)(_hists->At(36)))->Fill(Hgg.M());
 	}
 
